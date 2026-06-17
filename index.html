@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Multi-Agent 控制台</title>
+</head>
+
+<body style="font-family: Arial; padding: 40px;">
+
+<h2>🧠 Multi-Agent System 控制台</h2>
+
+<!-- 输入框 -->
+<textarea id="prompt" rows="6" cols="70"
+placeholder="请输入你的需求，例如：帮我做一个AI简历生成系统"></textarea>
+
+<br><br>
+
+<!-- 按钮 -->
+<button onclick="runAgent()" style="
+    padding: 10px 20px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    cursor: pointer;
+">
+    运行 Multi-Agent
+</button>
+
+<h3>📦 输出结果：</h3>
+<pre id="output" style="background:#111;color:#0f0;padding:15px;min-height:200px;"></pre>
+
+<script>
+async function runAgent() {
+    const prompt = document.getElementById("prompt").value;
+
+    if (!prompt) {
+        alert("请输入需求");
+        return;
+    }
+
+    document.getElementById("output").innerText = "⏳ AI正在思考...";
+
+    try {
+        const res = await fetch("http://127.0.0.1:8000/multi-agent", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                prompt: prompt
+            })
+        });
+
+        const data = await res.json();
+
+        document.getElementById("output").innerText =
+            data.result.final;
+
+    } catch (err) {
+        document.getElementById("output").innerText =
+            "❌ 请求失败：" + err;
+    }
+}
+</script>
+
+</body>
+</html>
