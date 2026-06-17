@@ -5,7 +5,9 @@ from orchestrator import run_task
 
 app = FastAPI()
 
-# CORS（必须）
+# =========================
+# CORS（允许前端访问）
+# =========================
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -14,21 +16,34 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# =========================
 # 请求模型
+# =========================
 class TaskRequest(BaseModel):
     prompt: str
 
-# 首页
+# =========================
+# 1️⃣ 根路由（解决 Not Found）
+# =========================
 @app.get("/")
 def home():
-    return {"message": "Multi-Agent System is running 🚀"}
+    return {
+        "message": "Multi-Agent System is running 🚀",
+        "status": "ok"
+    }
 
-# 单Agent
+# =========================
+# 2️⃣ 单 Agent
+# =========================
 @app.post("/run")
 def run(req: TaskRequest):
-    return {"result": run_task(req.prompt)}
+    return {
+        "result": run_task(req.prompt)
+    }
 
-# 多Agent
+# =========================
+# 3️⃣ 多 Agent
+# =========================
 @app.post("/multi-agent")
 def multi_agent(req: TaskRequest):
     result = run_task(req.prompt)
